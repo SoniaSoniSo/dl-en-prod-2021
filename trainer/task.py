@@ -15,10 +15,13 @@ template. Please feel free to remove this, or the other
 
 
 from tensorflow.keras import datasets
-from tensorflow.keras import models,layers,activations
+from tensorflow.keras import models
+from tensorflow.keras import layers
+from tensorflow.keras import activations
 from tensorflow.keras import optimizers
 from tensorflow.keras import losses
 from tensorflow.keras import metrics
+from tensorflow.keras import utils
 
 LOGGER =logging.getLogger()
 
