@@ -65,7 +65,7 @@ def train_and_evaluate(batch_size,epochs,job_dir,output_path):
                   metrics=[metrics.categorical_accuracy])
 
     #Train the model
-    logdir = os.path.join(job_dir,"/log/scalars/"+time.strftime("%Y%m%d =%H%M%S"))
+    logdir = os.path.join(job_dir,"/logs/scalars/"+time.strftime("%Y%m%d =%H%M%S"))
     tb_callback = callbacks.TensorBoard(log_dir=logdir)
     model.fit(x_train,
              y_train,
