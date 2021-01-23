@@ -1,6 +1,7 @@
 """A simple main file to showcase the template."""
 
 import logging.config
+import argparse
 
 """
 This module is an example for a single Python application with some
@@ -12,14 +13,14 @@ template. Please feel free to remove this, or the other
 (sklearn_main.py), or adapt as you need.
 """
 
-import argparse
-import logging.config
 
 from tensorflow.keras import datasets
 from tensorflow.keras import models,layers,activations
 from tensorflow.keras import optimizers
 from tensorflow.keras import losses
 from tensorflow.keras import metrics
+
+LOGGER =logging.getLogger()
 
 def _download_data():
     train,test =datasets.mnist.load_data()
@@ -53,10 +54,18 @@ def train_and_evaluate(batch_size,epochs,job_dir,output_path):
 
     #Build the model
     model=_build_model()
+    model.compile(loss=losses.categorical_crossentropy,
+                  optimizer=optimizers.Adam(),
+                  metrics=[metrics.categorical_accuracy])
+
     #Train the model
 
+    model.fit(x_train,y_train,epochs = epochs,batch_size=batch_size)
+
     #Evaluate the model
-    pass
+    loss_value,accuracy =model.evaluate(x_test,y_test)
+    LOGGER.info(" *** LOSS EVALUATE: %f      ACCURACY: %.4f" %(loss_value,accuracy))
+    
 
 def main():
     """Entry point for your module."""
