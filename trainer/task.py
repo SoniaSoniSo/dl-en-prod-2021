@@ -2,6 +2,8 @@
 
 import logging.config
 import argparse
+import os
+import time
 
 """
 This module is an example for a single Python application with some
@@ -22,6 +24,7 @@ from tensorflow.keras import optimizers
 from tensorflow.keras import losses
 from tensorflow.keras import metrics
 from tensorflow.keras import utils
+from tensorflow.keras import callbacks
 
 LOGGER =logging.getLogger()
 
@@ -62,8 +65,13 @@ def train_and_evaluate(batch_size,epochs,job_dir,output_path):
                   metrics=[metrics.categorical_accuracy])
 
     #Train the model
-
-    model.fit(x_train,y_train,epochs = epochs,batch_size=batch_size)
+    logdir = os.path.join(job_dir,"/log/scalars/"+time.strftime("%Y%m%d =%H%M%S"))
+    tb_callback = callbacks.TensorBoard(log_dir=logdir)
+    model.fit(x_train,
+             y_train,
+             epochs = epochs,
+             batch_size=batch_size,
+             callbacks = [tb_callback])
 
     #Evaluate the model
     loss_value,accuracy =model.evaluate(x_test,y_test)
