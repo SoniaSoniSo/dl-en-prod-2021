@@ -1,7 +1,7 @@
 #!/bin/sh
 
-EPOCHS =30
-BATCH_SIZE =1024
+EPOCHS=30
+BATCH_SIZE=1024
 
 gcloud ai-platform jobs submit training mnist_`date +"%s"` \
 --python-version 3.7 \
