@@ -1,5 +1,5 @@
 MODEL_NAME="clase_20210129"
-INPUT_DATA_FILE="data/instances.json"
+INPUT_DATA_FILE="data/instancias.json"
 VERSION_NAME="v0_1"
 REGION="europe-west1"
 
