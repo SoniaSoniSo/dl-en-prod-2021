@@ -19,9 +19,9 @@ trainingInput:
       - 2048
       - 4096
     - parameterName: model-type
-    type: CATEGORICAL
-    categoricalValues:
-     - densas
-     - cnn
+      type: CATEGORICAL
+      categoricalValues:
+      - densas
+      - cnn
     
     
