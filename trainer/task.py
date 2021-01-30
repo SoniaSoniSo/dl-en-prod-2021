@@ -28,9 +28,13 @@ def _download_data():
     x_test,y_test=test
     return x_train,y_train,x_test,y_test
 
-def _preprocess_data(x,y):
+def _preprocess_data(x,y,model):
     x=x/255.0
     y=utils.to_categorical(y)
+
+    if model=='cnn':
+     x_train.reshape(-1, 28, 28, 1).shape   
+
     return x,y
 
 def _build_model():
@@ -41,10 +45,22 @@ def _build_model():
     m.add(layers.Dense(64, activation=activations.relu))
     m.add(layers.Dense(32, activation=activations.relu))
     m.add(layers.Dense(10, activation=activations.softmax))
+    return m
+
+def _build_model_cnn():
+    m.add(layers.Input((28, 28, 1), name='my_input_layer'))
+    m.add(layers.Conv2D(32, (3, 3), activation=activations.relu))
+    m.add(layers.MaxPooling2D((2, 2)))
+    m.add(layers.Conv2D(16, (3, 3), activation=activations.relu))
+    m.add(layers.MaxPooling2D((2, 2)))
+    m.add(layers.Conv2D(8, (3, 3), activation=activations.relu))
+    m.add(layers.MaxPooling2D((2, 2)))
+    m.add(layers.Flatten())
+    m.add(layers.Dense(10, activation=activations.softmax)))
 
     return m
 
-def train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune):
+def train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune,type_model):
 
     #Download the data
     x_train,y_train,x_test,y_test = _download_data()
@@ -52,11 +68,15 @@ def train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune):
     x_train, y_train = _preprocess_data(x_train, y_train)
     x_test, y_test = _preprocess_data(x_test, y_test)
 
-    #Build the model
-    model=_build_model()
+
+    if type_model=='cnn':
+        #Build the model
+        model=__build_model_cnn
+    else:
+        model=__build_model_c
     model.compile(loss=losses.categorical_crossentropy,
-                  optimizer=optimizers.Adam(),
-                  metrics=[metrics.categorical_accuracy])
+                optimizer=optimizers.Adam(),
+                metrics=[metrics.categorical_accuracy])
 
     #Train the model
     logdir = os.path.join(job_dir,"/logs/scalars/"+time.strftime("%Y%m%d =%H%M%S"))
@@ -94,16 +114,24 @@ def main():
     parser.add_argument('--epochs',type = int, help ='Number the epochs for the training')
     parser.add_argument('--job-dir',default=None, required=False, help='Option for AI Platform')
     parser.add_argument('--model-output-path', help ='Path to write the SaveModel format')
+    parser.add_argument('--model-type', help ='Model type')
+    
+    #print('Select the model type for trainning: ')
+    #type_model = input()
+
 
     args= parser.parse_args()
+
 
     is_hypertune=args.hypertune
     batch_size = args.batch_size
     epochs = args.epochs
     job_dir = args.job_dir
     output_path = args.model_output_path
+    type_model= args.model_type
 
-    train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune)
+
+    train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune,type_model)
    
 
 if __name__ == "__main__":
