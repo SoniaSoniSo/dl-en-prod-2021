@@ -12,5 +12,5 @@ gcloud ai-platform jobs submit training mnist_`date +"%s"` \
 --job-dir gs://$BUCKET/tmp \
 --config ./bin/hyper.yaml \
 -- \
---model-output-path gs://$BUCKET/models
+--model-output-path gs://$BUCKET/models \
 --hypertune
