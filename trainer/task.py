@@ -28,12 +28,12 @@ def _download_data():
     x_test,y_test=test
     return x_train,y_train,x_test,y_test
 
-def _preprocess_data(x,y,model):
+def _preprocess_data(x,y,needs_reshape):
     x=x/255.0
     y=utils.to_categorical(y)
 
-    if model=='cnn':
-     x_train.reshape(-1, 28, 28, 1).shape   
+    if needs_reshape:
+     x_train.reshape(-1, 28, 28, 1)  
 
     return x,y
 
@@ -64,16 +64,22 @@ def train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune,type_m
 
     #Download the data
     x_train,y_train,x_test,y_test = _download_data()
+    
+    needs_reshape=False
     #Preprocess the data
+
     x_train, y_train = _preprocess_data(x_train, y_train)
     x_test, y_test = _preprocess_data(x_test, y_test)
 
 
     if type_model=='cnn':
         #Build the model
-        model=__build_model_cnn
+        needs_reshape= True
+        model=_build_model_cnn
     else:
-        model=__build_model_c
+        needs_reshape= False
+        model=_build_model
+
     model.compile(loss=losses.categorical_crossentropy,
                 optimizer=optimizers.Adam(),
                 metrics=[metrics.categorical_accuracy])
@@ -114,7 +120,7 @@ def main():
     parser.add_argument('--epochs',type = int, help ='Number the epochs for the training')
     parser.add_argument('--job-dir',default=None, required=False, help='Option for AI Platform')
     parser.add_argument('--model-output-path', help ='Path to write the SaveModel format')
-    parser.add_argument('--model-type', help ='Model type')
+    parser.add_argument('--model-type', help ='Model type',default='dense')
     
     #print('Select the model type for trainning: ')
     #type_model = input()
