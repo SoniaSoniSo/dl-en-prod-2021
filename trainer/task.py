@@ -48,6 +48,7 @@ def _build_model():
     return m
 
 def _build_model_cnn():
+    m = models.Sequential()
     m.add(layers.Input((28, 28, 1), name='my_input_layer'))
     m.add(layers.Conv2D(32, (3, 3), activation=activations.relu))
     m.add(layers.MaxPooling2D((2, 2)))
@@ -56,8 +57,7 @@ def _build_model_cnn():
     m.add(layers.Conv2D(8, (3, 3), activation=activations.relu))
     m.add(layers.MaxPooling2D((2, 2)))
     m.add(layers.Flatten())
-    m.add(layers.Dense(10, activation=activations.softmax)))
-
+    m.add(layers.Dense(10, activation=activations.softmax))
     return m
 
 def train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune,type_model):
@@ -121,9 +121,6 @@ def main():
     parser.add_argument('--job-dir',default=None, required=False, help='Option for AI Platform')
     parser.add_argument('--model-output-path', help ='Path to write the SaveModel format')
     parser.add_argument('--model-type', help ='Model type',default='dense')
-    
-    #print('Select the model type for trainning: ')
-    #type_model = input()
 
 
     args= parser.parse_args()
