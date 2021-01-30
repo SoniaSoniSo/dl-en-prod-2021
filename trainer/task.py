@@ -5,16 +5,7 @@ import argparse
 import os
 import time
 
-"""
-This module is an example for a single Python application with some
-top level functions. The tests directory includes some unitary tests
-for these functions.
-
-This is one of two main files samples included in this
-template. Please feel free to remove this, or the other
-(sklearn_main.py), or adapt as you need.
-"""
-
+import tensorflow as tf
 
 from tensorflow.keras import datasets
 from tensorflow.keras import models
@@ -79,6 +70,15 @@ def train_and_evaluate(batch_size,epochs,job_dir,output_path,is_hypertune):
     #Evaluate the model
     loss_value,accuracy =model.evaluate(x_test,y_test)
     LOGGER.info(" *** LOSS EVALUATE: %f      ACCURACY: %.4f" %(loss_value,accuracy))
+
+    #Communicate the results of the evaluate of the model
+    if is_hypertune:
+        metric_tag ='accuracy_live_class' #nombre de la metrica
+        eval_path = os.path.join(job_dir,metric_tag) #el job_dir va a ser diferente para cada uno de los jobs que ejecutemos
+        writer = tf.summary.create_file_writer(eval_path) #objeto que va a escribir las metricas
+        with writer.as_default():
+            tf.summary.scalar(metric_tag,accuracy,step =epochs) #el accuracy es lo que vamos a optimizar
+        writer.flush()
 
     #Save model in TF SavedModel Format
     if not is_hypertune:
